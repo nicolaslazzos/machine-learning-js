@@ -21,7 +21,19 @@ class LinearRegression {
 
   processFeatures(features) {
     features = tf.tensor(features);
+    features = this.standardize(features);
     return tf.ones([features.shape[0], 1]).concat(features, 1);
+  }
+
+  standardize(features) {
+    if (!this.mean && !this.variance) {
+      const { mean, variance } = tf.moments(features, 0);
+
+      this.mean = mean;
+      this.variance = variance;
+    }
+
+    return features.sub(this.mean).div(this.variance.pow(0.5));
   }
 
   gradientDescent() {

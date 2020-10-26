@@ -16,6 +16,8 @@ lr.train();
 
 const r2 = lr.test(testFeatures, testLabels);
 
+lr.features.print();
+
 console.log("R2 = ", r2);
 
 console.log("Weights:\n\tm =", lr.weights.get(1, 0), "\n\tb =", lr.weights.get(0, 0));
