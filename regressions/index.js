@@ -6,18 +6,14 @@ const LinearRegression = require("./linear-regression");
 let { features, labels, testFeatures, testLabels } = loadDSV("./cars.csv", {
   shuffle: true,
   splitTest: 50,
-  dataColumns: ["horsepower"],
+  dataColumns: ["horsepower", "weight", "displacement"],
   labelColumns: ["mpg"],
 });
 
-const lr = new LinearRegression(features, labels, { learningRate: 0.0001, iterations: 100 });
+const lr = new LinearRegression(features, labels, { learningRate: 0.1, iterations: 100 });
 
 lr.train();
 
 const r2 = lr.test(testFeatures, testLabels);
 
-lr.features.print();
-
 console.log("R2 = ", r2);
-
-console.log("Weights:\n\tm =", lr.weights.get(1, 0), "\n\tb =", lr.weights.get(0, 0));

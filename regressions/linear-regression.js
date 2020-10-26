@@ -8,7 +8,7 @@ class LinearRegression {
     // labels
     this.labels = tf.tensor(labels);
     // weights
-    this.weights = tf.zeros([2, 1]);
+    this.weights = tf.zeros([this.features.shape[1], 1]);
     // options
     this.options = Object.assign({ learningRate: 0.1, iterations: 1000 }, options);
   }
