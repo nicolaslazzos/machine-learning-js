@@ -13,10 +13,12 @@ class LinearRegression {
     this.options = Object.assign({ learningRate: 0.1, iterations: 1000 }, options);
     // mse records in each interation
     this.mseHistory = [];
+    this.bHistory = [];
   }
 
   train() {
     for (let i = 0; i < this.options.iterations; i++) {
+      this.bHistory.push(this.weights.get(0, 0));
       this.gradientDescent();
       this.mse();
       this.updateLearningRate();
