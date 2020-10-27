@@ -11,7 +11,7 @@ let { features, labels, testFeatures, testLabels } = loadDSV("./cars.csv", {
   labelColumns: ["mpg"],
 });
 
-const lr = new LinearRegression(features, labels, { learningRate: 0.1, iterations: 100 });
+const lr = new LinearRegression(features, labels, { learningRate: 0.1, iterations: 3, batchSize: 10 });
 
 lr.train();
 
@@ -20,7 +20,6 @@ const r2 = lr.test(testFeatures, testLabels);
 console.log("R2 = ", r2);
 
 // mse history
-plot({ x: lr.mseHistory.reverse(), xLabel: 'Iteration #', yLabel: 'MSE' });
+plot({ x: lr.mseHistory.reverse(), xLabel: "Iteration #", yLabel: "MSE" });
 
-// mse vs b history
-// plot({ x: lr.bHistory, y: lr.mseHistory.reverse(), xLabel: 'Value of b', yLabel: 'MSE' });
+lr.predict([[120, 2, 380]]).print();

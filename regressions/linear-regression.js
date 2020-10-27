@@ -10,16 +10,24 @@ class LinearRegression {
     // weights
     this.weights = tf.zeros([this.features.shape[1], 1]);
     // options
-    this.options = Object.assign({ learningRate: 0.1, iterations: 1000 }, options);
+    this.options = Object.assign({ learningRate: 0.1, iterations: 1000, batchSize: this.features.shape[0] }, options);
     // mse records in each interation
     this.mseHistory = [];
-    this.bHistory = [];
   }
 
   train() {
+    const batchQuantity = Math.floor(this.features.shape[0] / this.options.batchSize);
+
     for (let i = 0; i < this.options.iterations; i++) {
-      this.bHistory.push(this.weights.get(0, 0));
-      this.gradientDescent();
+      for (let j = 0; j < batchQuantity; j++) {
+        const startIndex = [j * this.options.batchSize, 0];
+        const endIndex = [this.options.batchSize, -1];
+
+        const featuresSlice = this.features.slice(startIndex, endIndex);
+        const labelsSlice = this.labels.slice(startIndex, endIndex);
+
+        this.gradientDescent(featuresSlice, labelsSlice);
+      }
       this.mse();
       this.updateLearningRate();
     }
@@ -42,15 +50,15 @@ class LinearRegression {
     return features.sub(this.mean).div(this.variance.pow(0.5));
   }
 
-  gradientDescent() {
+  gradientDescent(features, labels) {
     // m * x + b
-    const currentGuesses = this.features.matMul(this.weights);
+    const currentGuesses = features.matMul(this.weights);
 
     // guess - real
-    const differences = currentGuesses.sub(this.labels);
+    const differences = currentGuesses.sub(labels);
 
     // [bSlope, mSlope]
-    const slopes = this.features.transpose().matMul(differences).div(this.features.shape[0]);
+    const slopes = features.transpose().matMul(differences).div(features.shape[0]);
 
     // update weights
     this.weights = this.weights.sub(slopes.mul(this.options.learningRate));
@@ -99,6 +107,10 @@ class LinearRegression {
 
     // coefficient of determination (r2)
     return 1 - res / tot;
+  }
+
+  predict(observations) {
+    return this.processFeatures(observations).matMul(this.weights);
   }
 }
 
